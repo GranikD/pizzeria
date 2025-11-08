@@ -1,11 +1,77 @@
-print("Добро пожаловать в пиццерию Пика-Чика\n")
-print("="*37)
+import re
+from datetime import datetime
+
+print("Добро пожаловать в пиццерию Пика-Чика")
+print("=" * 37)
+
+
 def say_hello(name):
     print(f"привет, {name}")
 
 
-name = input("\nВведите ваше имя: ")
+def is_valid_name(name):
+    name_without_spaces = name.replace(" ", "")
+    return name_without_spaces.isalpha() and len(name) > 0
+
+def is_valid_date(date_str):
+    try:
+        day, month, year = map(int, date_str.split('/'))
+        if len(date_str) != 10 or date_str[2] != '/' or date_str[5] != '/':
+            return False
+
+        input_date = datetime(year, month, day)
+        current_date = datetime.now()
+        if input_date > current_date:
+            return False
+        return True
+    except (ValueError, IndexError):
+        return False
+def is_valid_email(email):
+    pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]'
+    return re.match(pattern, email) is not None
+
+def is_valid_phone(phone):
+    return phone.startswith('+7') and len(phone) == 12 and phone[1:].isdigit()
+
+while True:
+    name = input("введите ваше имя: ").strip()
+    if is_valid_name(name):
+        break
+    else:
+        print("Ошибка! Имя должно содержать только буквы и пробелы. Попробуйте еще раз.")
+
 say_hello(name)
+
+while True:
+    birth_date = input("\nвведите вашу дату рождения (ДД/ММ/ГГГГ): ").strip()
+    if is_valid_date(birth_date):
+        day, month, year = map(int, birth_date.split('/'))
+        birth_date_obj = datetime(year, month, day)
+        current_date = datetime.now()
+        age = current_date.year - birth_date_obj.year - (
+                    (current_date.month, current_date.day) < (birth_date_obj.month, birth_date_obj.day))
+        break
+    else:
+        print("Ошибка! Дата должна быть в формате ДД/ММ/ГГГГ и не может быть в будущем. Пример: 15/05/1990")
+
+while True:
+    email = input("\nВведите ваш email: ").strip()
+    if is_valid_email(email):
+        break
+    else:
+        print("Ошибка! почта должна быть в формате piminov@gmail.com или piminov@mail.ru")
+
+while True:
+    phone = input("\nВведите ваш телефон (+7XXXXXXXXXX): ").strip()
+    if is_valid_phone(phone):
+        break
+    else:
+        print("Ошибка! Телефон должен начинаться с +7 и содержать 11 цифр. Пример: +79123456789")
+print('-'*20)
+print(f"\nРегистрация завершена:\n"
+      f"Возраст: {age} лет\n"
+      f"Email: {email}\n"
+      f"Телефон: {phone}\n")
 
 pizzas = {
     "1": {"name": "пеперони", "цена": 400},
@@ -21,84 +87,85 @@ drinks = {
     "4": {"name": "кола(б)", "цена": 150}
 }
 
-age = int(input("Введите ваш возраст: "))
-
 order = []
 total = 0
+
+print(f"Вам {age} лет")
+
 while True:
- if age < 18:
-    print("\nВам доступно следующее меню:")
-    print("Пиццы: пеперони-400руб, сырная-350руб")
-    print("Напитки: сок-100руб, кола-120руб")
+    if age < 18:
+        print("\nВам доступно следующее меню:")
+        print("Пиццы: пеперони-400руб, сырная-350руб")
+        print("Напитки: сок-100руб, кола-120руб")
 
-    #<18
-    pizza_choice = input("\nВыберите пиццу (пеперони/сырная) или ентер для вывода чека: ")
-    if pizza_choice == "пеперони":
-        order.append("Пицца пеперони - 400 руб")
-        total += 400
-    elif pizza_choice == "сырная":
-        order.append("Пицца сырная - 350 руб")
-        total += 350
-    elif pizza_choice == '':
-        break
+        #<18
+        pizza_choice = input("\nВыберите пиццу (пеперони/сырная) или ентер для вывода чека: ").strip()
+        if pizza_choice == "пеперони":
+            order.append("Пицца пеперони - 400 руб")
+            total += 400
+        elif pizza_choice == "сырная":
+            order.append("Пицца сырная - 350 руб")
+            total += 350
+        elif pizza_choice == '':
+            break
+        else:
+            print("Неверный выбор пиццы")
+            continue
+        #<18
+        drink_choice = input("\nВыберите напиток (сок/кола) или ентер для вывода чека: ").strip()
+        if drink_choice == "сок":
+            order.append("Сок - 100 руб")
+            total += 100
+        elif drink_choice == "кола":
+            order.append("Кола - 120 руб")
+            total += 120
+        elif drink_choice == '':
+            break
+        else:
+            print("Неверный выбор напитка")
     else:
-        print("Неверный выбор пиццы")
+        print("\nВам доступно следующее меню:")
+        print("Пиццы: пеперони-400руб, пеперони(б)-500руб, сырная-350руб, сырная(б)-450руб")
+        print("Напитки: сок-100руб, сок(б)-130руб, кола-120руб, кола(б)-150руб")
 
-    #<18
-    drink_choice = input("\nВыберите напиток (сок/кола) или ентер для вывода чека: ")
-    if drink_choice == "сок":
-        order.append("Сок - 100 руб")
-        total += 100
-    elif drink_choice == "кола":
-        order.append("Кола - 120 руб")
-        total += 120
-    elif drink_choice == '':
-        break
-    else:
-        print("Неверный выбор напитка")
+        # 18+
+        pizza_choice = input("\nВыберите пиццу (пеперони/пеперони(б)/сырная/сырная(б)) или ентер для вывода чека: ").strip()
+        if pizza_choice == "пеперони":
+            order.append("Пицца пеперони - 400 руб")
+            total += 400
+        elif pizza_choice == "пеперони(б)":
+            order.append("Пицца пеперони(б) - 500 руб")
+            total += 500
+        elif pizza_choice == "сырная":
+            order.append("Пицца сырная - 350 руб")
+            total += 350
+        elif pizza_choice == "сырная(б)":
+            order.append("Пицца сырная(б) - 450 руб")
+            total += 450
+        elif pizza_choice == '':
+            break
+        else:
+            print("Неверный выбор пиццы")
+            continue
 
- else:
-    print("\nВам доступно следующее меню:")
-    print("Пиццы: пеперони-400руб, пеперони(б)-500руб, сырная-350руб, сырная(б)-450руб")
-    print("Напитки: сок-100руб, сок(б)-130руб, кола-120руб, кола(б)-150руб")
-
-    #18+
-    pizza_choice = input("\nВыберите пиццу (пеперони/пеперони(б)/сырная/сырная(б)) или ентер для вывода чека: ")
-    if pizza_choice == "пеперони":
-        order.append("Пицца пеперони - 400 руб")
-        total += 400
-    elif pizza_choice == "пеперони(б)":
-        order.append("Пицца пеперони(б) - 500 руб")
-        total += 500
-    elif pizza_choice == "сырная":
-        order.append("Пицца сырная - 350 руб")
-        total += 350
-    elif pizza_choice == "сырная(б)":
-        order.append("Пицца сырная(б) - 450 руб")
-        total += 450
-    elif pizza_choice == '':
-        break
-    else:
-        print("Неверный выбор пиццы")
-
-    #18+
-    drink_choice = input("\nВыберите напиток (сок/сок(б)/кола/кола(б)) или ентер для вывода чека: ")
-    if drink_choice == "сок":
-        order.append("Сок - 100 руб")
-        total += 100
-    elif drink_choice == "сок(б)":
-        order.append("Сок(б) - 130 руб")
-        total += 130
-    elif drink_choice == "кола":
-        order.append("Кола - 120 руб")
-        total += 120
-    elif drink_choice == "кола(б)":
-        order.append("Кола(б) - 150 руб")
-        total += 150
-    elif drink_choice == '':
-        break
-    else:
-        print("Неверный выбор напитка")
+        # 18+
+        drink_choice = input("\nВыберите напиток (сок/сок(б)/кола/кола(б)) или ентер для вывода чека: ").strip()
+        if drink_choice == "сок":
+            order.append("Сок - 100 руб")
+            total += 100
+        elif drink_choice == "сок(б)":
+            order.append("Сок(б) - 130 руб")
+            total += 130
+        elif drink_choice == "кола":
+            order.append("Кола - 120 руб")
+            total += 120
+        elif drink_choice == "кола(б)":
+            order.append("Кола(б) - 150 руб")
+            total += 150
+        elif drink_choice == '':
+            break
+        else:
+            print("Неверный выбор напитка")
 
 print("\n" + "=" * 30)
 print("ЧЕК")
