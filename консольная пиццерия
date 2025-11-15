@@ -8,7 +8,6 @@ print("=" * 37)
 def say_hello(name):
     print(f"привет, {name}")
 
-
 def is_valid_name(name):
     name_without_spaces = name.replace(" ", "")
     return name_without_spaces.isalpha() and len(name) > 0
@@ -26,12 +25,52 @@ def is_valid_date(date_str):
         return True
     except (ValueError, IndexError):
         return False
+
 def is_valid_email(email):
     pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]'
     return re.match(pattern, email) is not None
 
 def is_valid_phone(phone):
     return phone.startswith('+7') and len(phone) == 12 and phone[1:].isdigit()
+
+def create_custom_pizza():
+    ingredients = {
+        "1": {"name": "сыр", "price": 50},
+        "2": {"name": "пеперони", "price": 80},
+        "3": {"name": "оливки", "price": 40},
+        "4": {"name": "соус", "price": 30},
+        "5": {"name": "помидоры", "price": 35}
+    }
+    
+    print("\nСоздание кастомной пиццы:")
+    print("Доступные ингредиенты:")
+    for num, ing in ingredients.items():
+        print(f"{num}. {ing['name']} - {ing['price']} руб")
+    print("0. Завершить выбор ингредиентов")
+    
+    custom_price = 200  # Базовая цена
+    selected_ingredients = []
+    
+    while True:
+        choice = input("\nВыберите ингредиент (номер): ").strip()
+        if choice == '0':
+            break
+        elif choice in ingredients:
+            ingredient = ingredients[choice]
+            if ingredient['name'] not in selected_ingredients:
+                selected_ingredients.append(ingredient['name'])
+                custom_price += ingredient['price']
+                print(f"Добавлен: {ingredient['name']}")
+            else:
+                print("Этот ингредиент уже добавлен")
+        else:
+            print("Неверный номер ингредиента")
+    
+    if selected_ingredients:
+        ingredients_str = ", ".join(selected_ingredients)
+        return f"Кастомная пицца ({ingredients_str})", custom_price
+    else:
+        return "Кастомная пицца (базовая)", custom_price
 
 while True:
     name = input("введите ваше имя: ").strip()
@@ -67,20 +106,33 @@ while True:
         break
     else:
         print("Ошибка! Телефон должен начинаться с +7 и содержать 11 цифр. Пример: +79123456789")
+        
 print('-'*20)
 print(f"\nРегистрация завершена:\n"
       f"Возраст: {age} лет\n"
       f"Email: {email}\n"
       f"Телефон: {phone}\n")
 
-pizzas = {
+pizzas_minors = {
+    "1": {"name": "пеперони", "цена": 400},
+    "2": {"name": "сырная", "цена": 350},
+    "3": {"name": "кастомная", "цена": "расчетная"}
+}
+
+pizzas_adults = {
     "1": {"name": "пеперони", "цена": 400},
     "2": {"name": "пеперони(б)", "цена": 500},
     "3": {"name": "сырная", "цена": 350},
-    "4": {"name": "сырная(б)", "цена": 450}
+    "4": {"name": "сырная(б)", "цена": 450},
+    "5": {"name": "кастомная", "цена": "расчетная"}
 }
 
-drinks = {
+drinks_minors = {
+    "1": {"name": "сок", "цена": 100},
+    "2": {"name": "кола", "цена": 120}
+}
+
+drinks_adults = {
     "1": {"name": "сок", "цена": 100},
     "2": {"name": "сок(б)", "цена": 130},
     "3": {"name": "кола", "цена": 120},
@@ -94,86 +146,97 @@ print(f"Вам {age} лет")
 
 while True:
     if age < 18:
+        current_pizzas = pizzas_minors
+        current_drinks = drinks_minors
+        
         print("\nВам доступно следующее меню:")
         print('-'*30)
-        print("Пиццы: пеперони-400руб, сырная-350руб\n")
-        print("Напитки: сок-100руб, кола-120руб")
+        print("ПИЦЦЫ:")
+        for num, pizza in current_pizzas.items():
+            print(f"{num}. {pizza['name']} - {pizza['цена']} руб")
+        
+        print("\nНАПИТКИ:")
+        for num, drink in current_drinks.items():
+            print(f"{num}. {drink['name']} - {drink['цена']} руб")
 
-        #<18
-        pizza_choice = input("\nВыберите пиццу (пеперони/сырная) или ентер для вывода чека: ").strip()
-        if pizza_choice == "пеперони":
-            order.append("Пицца пеперони - 400 руб")
-            total += 400
-        elif pizza_choice == "сырная":
-            order.append("Пицца сырная - 350 руб")
-            total += 350
-        elif pizza_choice == '':
+        pizza_choice = input("\nВыберите пиццу (номер) или 0 для вывода чека: ").strip()
+        if pizza_choice == '0':
             break
+        elif pizza_choice in current_pizzas:
+            pizza = current_pizzas[pizza_choice]
+            if pizza['name'] == 'кастомная':
+                custom_name, custom_price = create_custom_pizza()
+                order.append(f"{custom_name} - {custom_price} руб")
+                total += custom_price
+            else:
+                order.append(f"Пицца {pizza['name']} - {pizza['цена']} руб")
+                total += pizza['цена']
         else:
-            print("Неверный выбор пиццы")
+            print("Неверный номер пиццы")
             continue
-        #<18
-        drink_choice = input("\nВыберите напиток (сок/кола) или ентер для вывода чека: ").strip()
-        if drink_choice == "сок":
-            order.append("Сок - 100 руб")
-            total += 100
-        elif drink_choice == "кола":
-            order.append("Кола - 120 руб")
-            total += 120
-        elif drink_choice == '':
+
+        print("\nНАПИТКИ:")
+        for num, drink in current_drinks.items():
+            print(f"{num}. {drink['name']} - {drink['цена']} руб")
+            
+        drink_choice = input("\nВыберите напиток (номер) или 0 для вывода чека: ").strip()
+        if drink_choice == '0':
             break
+        elif drink_choice in current_drinks:
+            drink = current_drinks[drink_choice]
+            order.append(f"{drink['name']} - {drink['цена']} руб")
+            total += drink['цена']
         else:
-            print("Неверный выбор напитка")
+            print("Неверный номер напитка")
     else:
+        current_pizzas = pizzas_adults
+        current_drinks = drinks_adults
+        
         print("\nВам доступно следующее меню:")
-        print("Пиццы: пеперони-400руб, пеперони(б)-500руб, сырная-350руб, сырная(б)-450руб")
-        print("Напитки: сок-100руб, сок(б)-130руб, кола-120руб, кола(б)-150руб")
+        print("ПИЦЦЫ:")
+        for num, pizza in current_pizzas.items():
+            print(f"{num}. {pizza['name']} - {pizza['цена']} руб")
+        
+        print("\nНАПИТКИ:")
+        for num, drink in current_drinks.items():
+            print(f"{num}. {drink['name']} - {drink['цена']} руб")
 
-        # 18+
-        pizza_choice = input("\nВыберите пиццу (пеперони/пеперони(б)/сырная/сырная(б)) или ентер для вывода чека: ").strip()
-        if pizza_choice == "пеперони":
-            order.append("Пицца пеперони - 400 руб")
-            total += 400
-        elif pizza_choice == "пеперони(б)":
-            order.append("Пицца пеперони(б) - 500 руб")
-            total += 500
-        elif pizza_choice == "сырная":
-            order.append("Пицца сырная - 350 руб")
-            total += 350
-        elif pizza_choice == "сырная(б)":
-            order.append("Пицца сырная(б) - 450 руб")
-            total += 450
-        elif pizza_choice == '':
+        pizza_choice = input("\nВыберите пиццу (номер) или 0 для вывода чека: ").strip()
+        if pizza_choice == '0':
             break
+        elif pizza_choice in current_pizzas:
+            pizza = current_pizzas[pizza_choice]
+            if pizza['name'] == 'кастомная':
+                custom_name, custom_price = create_custom_pizza()
+                order.append(f"{custom_name} - {custom_price} руб")
+                total += custom_price
+            else:
+                order.append(f"Пицца {pizza['name']} - {pizza['цена']} руб")
+                total += pizza['цена']
         else:
-            print("Неверный выбор пиццы")
+            print("Неверный номер пиццы")
             continue
 
-        # 18+
-        drink_choice = input("\nВыберите напиток (сок/сок(б)/кола/кола(б)) или ентер для вывода чека: ").strip()
-        if drink_choice == "сок":
-            order.append("Сок - 100 руб")
-            total += 100
-        elif drink_choice == "сок(б)":
-            order.append("Сок(б) - 130 руб")
-            total += 130
-        elif drink_choice == "кола":
-            order.append("Кола - 120 руб")
-            total += 120
-        elif drink_choice == "кола(б)":
-            order.append("Кола(б) - 150 руб")
-            total += 150
-        elif drink_choice == '':
+        print("\nНАПИТКИ:")
+        for num, drink in current_drinks.items():
+            print(f"{num}. {drink['name']} - {drink['цена']} руб")
+            
+        drink_choice = input("\nВыберите напиток (номер) или 0 для вывода чека: ").strip()
+        if drink_choice == '0':
             break
+        elif drink_choice in current_drinks:
+            drink = current_drinks[drink_choice]
+            order.append(f"{drink['name']} - {drink['цена']} руб")
+            total += drink['цена']
         else:
-            print("Неверный выбор напитка")
+            print("Неверный номер напитка")
 
-print("\n" + "=" * 30)
+print("\n" + "=" * 35)
 print("ЧЕК")
-print("=" * 30)
+print("="*35)
 for item in order:
     print(item)
-print("=" * 30)
+print("="*35)
 print(f"ИТОГО: {total} руб")
-print("=" * 30)
+print("="*35)
 print("Спасибо за заказ!")
