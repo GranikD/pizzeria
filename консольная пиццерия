@@ -48,7 +48,7 @@ def create_custom_pizza():
         print(f"{num}. {ing['name']} - {ing['price']} руб")
     print("0. Завершить выбор ингредиентов")
     
-    custom_price = 200  # Базовая цена
+    custom_price = 200  #Базовая цена(условно цена теста)
     selected_ingredients = []
     
     while True:
