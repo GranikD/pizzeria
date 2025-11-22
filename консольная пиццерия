@@ -8,12 +8,13 @@ print("=" * 37)
 def say_hello(name):
     print(f"привет, {name}")
 
+
 def is_valid_name(name):
     name_without_spaces = name.replace(" ", "")
     return name_without_spaces.isalpha() and len(name) > 0
 
+
 def is_valid_date(date_str):
-    try:
         day, month, year = map(int, date_str.split('/'))
         if len(date_str) != 10 or date_str[2] != '/' or date_str[5] != '/':
             return False
@@ -23,15 +24,16 @@ def is_valid_date(date_str):
         if input_date > current_date:
             return False
         return True
-    except (ValueError, IndexError):
-        return False
+
 
 def is_valid_email(email):
     pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]'
-    return re.match(pattern, email) is not None
+    return re.match(pattern, email)
+
 
 def is_valid_phone(phone):
     return phone.startswith('+7') and len(phone) == 12 and phone[1:].isdigit()
+
 
 def create_custom_pizza():
     ingredients = {
@@ -41,16 +43,16 @@ def create_custom_pizza():
         "4": {"name": "соус", "price": 30},
         "5": {"name": "помидоры", "price": 35}
     }
-    
+
     print("\nСоздание кастомной пиццы:")
     print("Доступные ингредиенты:")
     for num, ing in ingredients.items():
         print(f"{num}. {ing['name']} - {ing['price']} руб")
     print("0. Завершить выбор ингредиентов")
-    
-    custom_price = 200  #Базовая цена(условно цена теста)
+
+    custom_price = 200  # Базовая цена(условно цена теста)
     selected_ingredients = []
-    
+
     while True:
         choice = input("\nВыберите ингредиент (номер): ").strip()
         if choice == '0':
@@ -65,12 +67,13 @@ def create_custom_pizza():
                 print("Этот ингредиент уже добавлен")
         else:
             print("Неверный номер ингредиента")
-    
+
     if selected_ingredients:
         ingredients_str = ", ".join(selected_ingredients)
         return f"Кастомная пицца ({ingredients_str})", custom_price
     else:
         return "Кастомная пицца (базовая)", custom_price
+
 
 while True:
     name = input("введите ваше имя: ").strip()
@@ -88,7 +91,7 @@ while True:
         birth_date_obj = datetime(year, month, day)
         current_date = datetime.now()
         age = current_date.year - birth_date_obj.year - (
-                    (current_date.month, current_date.day) < (birth_date_obj.month, birth_date_obj.day))
+                (current_date.month, current_date.day) < (birth_date_obj.month, birth_date_obj.day))
         break
     else:
         print("Ошибка! Дата должна быть в формате ДД/ММ/ГГГГ и не может быть в будущем. Пример: 15/05/1990")
@@ -106,8 +109,8 @@ while True:
         break
     else:
         print("Ошибка! Телефон должен начинаться с +7 и содержать 11 цифр. Пример: +79123456789")
-        
-print('-'*20)
+
+print('-' * 20)
 print(f"\nРегистрация завершена:\n"
       f"Возраст: {age} лет\n"
       f"Email: {email}\n"
@@ -148,13 +151,13 @@ while True:
     if age < 18:
         current_pizzas = pizzas_minors
         current_drinks = drinks_minors
-        
+
         print("\nВам доступно следующее меню:")
-        print('-'*30)
+        print('-' * 30)
         print("ПИЦЦЫ:")
         for num, pizza in current_pizzas.items():
             print(f"{num}. {pizza['name']} - {pizza['цена']} руб")
-        
+
         print("\nНАПИТКИ:")
         for num, drink in current_drinks.items():
             print(f"{num}. {drink['name']} - {drink['цена']} руб")
@@ -178,7 +181,7 @@ while True:
         print("\nНАПИТКИ:")
         for num, drink in current_drinks.items():
             print(f"{num}. {drink['name']} - {drink['цена']} руб")
-            
+
         drink_choice = input("\nВыберите напиток (номер) или 0 для вывода чека: ").strip()
         if drink_choice == '0':
             break
@@ -191,12 +194,12 @@ while True:
     else:
         current_pizzas = pizzas_adults
         current_drinks = drinks_adults
-        
+
         print("\nВам доступно следующее меню:")
         print("ПИЦЦЫ:")
         for num, pizza in current_pizzas.items():
             print(f"{num}. {pizza['name']} - {pizza['цена']} руб")
-        
+
         print("\nНАПИТКИ:")
         for num, drink in current_drinks.items():
             print(f"{num}. {drink['name']} - {drink['цена']} руб")
@@ -220,7 +223,7 @@ while True:
         print("\nНАПИТКИ:")
         for num, drink in current_drinks.items():
             print(f"{num}. {drink['name']} - {drink['цена']} руб")
-            
+
         drink_choice = input("\nВыберите напиток (номер) или 0 для вывода чека: ").strip()
         if drink_choice == '0':
             break
@@ -233,10 +236,10 @@ while True:
 
 print("\n" + "=" * 35)
 print("ЧЕК")
-print("="*35)
+print("=" * 35)
 for item in order:
     print(item)
-print("="*35)
+print("=" * 35)
 print(f"ИТОГО: {total} руб")
-print("="*35)
+print("=" * 35)
 print("Спасибо за заказ!")
