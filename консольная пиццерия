@@ -11,22 +11,16 @@ def load_bd():
     # Загружаем базу данных из файла или создает новую при отсутствии
     try:
         # Пытаемся открыть файл для чтения
-        with open(bd_FILE, "r", encoding="utf-8") as f:
+        with open(bd_FILE, encoding="utf-8") as f:
             return json.load(f)
-            # filenotfounderror - если файл не найден
-            # decodeerror - если код поврежден
     except (FileNotFoundError, json.JSONDecodeError):
         # Если файл не найден или поврежден создаем новую бд
         return {"users": [], "orders": [], "next_order_id": 1}
 
-    # Сохраняет базу данных в файл
-def save_bd(bd):            # Честно - не разобрался что это(по идее преобразование строки в байты),
-                            # но при запуске базы данных возникала ошибка где было указано: "The file was loaded in a wrong encoding:"UTF-8""
+def save_bd(bd):
     with open(bd_FILE, "w", encoding="utf-8") as f:
         # Преобразование словаря в JSON с форматированием
-                         # Используем значение false для того что бы в бд символы оставались как есть
         json.dump(bd, f, ensure_ascii=False, indent=2)
-
 
 # Загрузка базы данных при старте программы
 bd = load_bd()
@@ -37,7 +31,7 @@ def say_hello(name):
 
 # Проверяет корректность имени (только буквы и пробелы)
 def is_valid_name(name):
-    name_without_spaces = name.replace(" ", "")  # Удаляем пробелы
+    name_without_spaces = name.strip()  # Удаляем пробелы
     # Метод isalpha() проверяет, что строка состоит только из букв
     return name_without_spaces.isalpha() and len(name.strip()) > 0
 
@@ -67,7 +61,6 @@ def is_valid_email(email):
 
 # Проверяет корректность номера телефона (формат +7XXXXXXXXXX)
 def is_valid_phone(phone):
-                                                                    # Проверяет все ли символы цифры
     return phone.startswith('+7') and len(phone) == 12 and phone[1:].isdigit()
 
 # Создает кастомную пиццу с выбором ингредиентов
@@ -107,7 +100,7 @@ def create_custom_pizza():
 
     # Формируем описание пиццы
     if selected_ingredients:
-                               # Объединяем список в строку
+        # Объединяем список в строку
         ingredients_str = ", ".join(selected_ingredients)
         return f"Кастомная пицца ({ingredients_str})", custom_price
     else:
@@ -120,7 +113,6 @@ def find_user(email, phone):
         if u.get("email") == email or u.get("phone") == phone:
             return u
     return None
-
 
 # Блок регистрации пользователя
 while True:
@@ -219,8 +211,6 @@ drinks_adults = {
 
 order_items = []  # Список для ссохранения товаров
 total = 0  # Сумма заказа
-
-print(f"Вам {age} лет")
 
 # Цикл создания заказа
 while True:
