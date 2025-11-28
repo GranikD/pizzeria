@@ -61,7 +61,7 @@ def is_valid_date(date_str):
 
 # Проверяет корректность email с помощью регулярного выражения
 def is_valid_email(email):
-    pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+    pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]'
     # re.match проверяет соответствие строки шаблону с начала строки
     return bool(re.match(pattern, email))
 
